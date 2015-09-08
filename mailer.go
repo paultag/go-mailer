@@ -22,6 +22,12 @@ type Mailer struct {
 	Root   string
 }
 
+type MailerData struct {
+	Sender string
+	To     string
+	Data   interface{}
+}
+
 func (m *Mailer) Mail(to []string, mailTemplate string, data interface{}) error {
 	auth := smtp.PlainAuth(
 		"",
@@ -37,7 +43,11 @@ func (m *Mailer) Mail(to []string, mailTemplate string, data interface{}) error 
 		return err
 	}
 
-	if err := t.Execute(&byteBuffer, data); err != nil {
+	if err := t.Execute(&byteBuffer, MailerData{
+		Sender: m.Config.Sender,
+		To:     strings.Join(to, ", "),
+		Data:   data,
+	}); err != nil {
 		return err
 	}
 
