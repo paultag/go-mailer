@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"path"
+	"strings"
 
 	"net/smtp"
 	"pault.ag/go/config"
@@ -23,9 +24,9 @@ type Mailer struct {
 }
 
 type MailerData struct {
-	Sender string
-	To     string
-	Data   interface{}
+	From string
+	To   string
+	Data interface{}
 }
 
 func (m *Mailer) Mail(to []string, mailTemplate string, data interface{}) error {
@@ -44,9 +45,9 @@ func (m *Mailer) Mail(to []string, mailTemplate string, data interface{}) error 
 	}
 
 	if err := t.Execute(&byteBuffer, MailerData{
-		Sender: m.Config.Sender,
-		To:     strings.Join(to, ", "),
-		Data:   data,
+		From: m.Config.Sender,
+		To:   strings.Join(to, ", "),
+		Data: data,
 	}); err != nil {
 		return err
 	}
