@@ -30,6 +30,10 @@ type MailerData struct {
 }
 
 func (m *Mailer) Mail(to []string, mailTemplate string, data interface{}) error {
+	if m.Config.Host == "" {
+		/* We're basically disabled. */
+		return nil
+	}
 	auth := smtp.PlainAuth(
 		"",
 		m.Config.Sender,
